@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="berrysys-ussdgw" packages="">
+	<Appenders>
+		<RollingFile name="berrysys-ussdgw-root" fileName="./logs/berrysys-ussdgw-root.log"
+			filePattern="./logs/berrysys-ussdgw-root-%i.log">
+			<PatternLayout
+				pattern="%highlight{%date{ISO8601} %level %thread %class %line %method - %message%xEx%n}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+		</RollingFile>
+		
+		<RollingFile name="berrysys-ussdgw-main" fileName="./logs/berrysys-ussdgw-main.log"
+			filePattern="./logs/berrysys-ussdgw-main-%i.log">
+			<PatternLayout
+				pattern="%highlight{%date{ISO8601} %level %thread %class %line %method - %message%xEx%n}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="20" />
+	</RollingFile>
+	</Appenders>
+	<Loggers>
+		<Root level="trace">
+			<AppenderRef ref="berrysys-ussdgw-root" />
+		</Root>
+		<Logger name="com.berrysys" additivity="false" level="trace">
+			<AppenderRef ref="berrysys-ussdgw-main" />
+		</Logger>
+
+	</Loggers>
+</Configuration>

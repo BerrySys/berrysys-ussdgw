@@ -1,0 +1,277 @@
+BerrysSys SigTran USSDGW.
+
+Abstract
+
+        This README describes BerrySys SigTran USSDGW.
+
+Introduction
+
+        A BerrySys SigTran USSDGW is J2SE USSDGW that works on top of
+        jss7 2.1.0-FINAL from mobicents.
+        Supports mobile station and network initiated ussd traffic.
+
+        USSD Applications that already run on top mobicents ussdgateway can
+        also run on top of BerrySys SigTran USSDGW.
+        Just ensure that you are using a xml serializer compatible with:
+        org.mobicents.ussd:xml:1.0.0-SNAPSHOT
+
+Requirements
+
+        Ensure that you have a linux kernel that supports sctp.
+        Run the following command to check if the kernel has support to sctp:
+        /usr/bin/checksctp
+        If sctp is supported you will see a message on stdout like: "SCTP supported"
+
+        Also, download dependencies for jss7:
+
+		Installing libmobicents-dahdi-linux:
+		
+        $ wget https://oss.sonatype.org/content/groups/public/org/mobicents/\
+        protocols/ss7/hardware/libmobicents-dahdi-linux/2.1.0-SNAPSHOT/\
+        libmobicents-dahdi-linux-2.1.0-SNAPSHOT.so
+
+        $ mv libmobicents-dahdi-linux-2.1.0-SNAPSHOT.so \
+        libmobicents-dahdi-linux-2.1.0-FINAL.so
+        $ mvn install:install-file\
+        -DgroupId=org.mobicents.protocols.ss7.hardware\
+        -DartifactId=libmobicents-dahdi-linux -Dversion=2.1.0.FINAL\
+        -Dpackaging=so -Dfile=./libmobicents-dahdi-linux-2.1.0-FINAL.so
+
+		Instaling jmxtools:
+		
+        $ wget http://www.java2s.com/Code/JarDownload/jmxtools\
+        /jmxtools-1.2.1.jar.zip
+        $ unzip ./jmxtools-1.2.1.jar.zip
+        $ mvn install:install-file -DgroupId=com.sun.jdmk\
+        -DartifactId=jmxtools -Dversion=1.2.1 -Dpackaging=jar\
+        -Dfile=./jmxtools-1.2.1.jar
+
+		Installing jasn:
+		
+        $ git clone https://code.google.com/p/jasn
+        $ cd jasn
+        $ mvn clean install
+
+
+		Installing sctp:
+		
+        $ git clone https://code.google.com/p/sctp
+        $ cd sctp
+        $ mvn clean install
+
+        Installing jss7:
+
+        $ git clone https://code.google.com/p/jss7
+        $ cd jss7
+        $ git reset --hard f6beefabd3ec046caf5479a4066f98d9d3e05e2c
+        $ mvn clean install -Dmaven.test.skip=true
+
+
+        Installing xml serializer:
+
+        $ git clone https://code.google.com/p/ussdgateway/
+        $ cd ussdgateway
+        $ git reset --hard 8eb05ea4012c8e08a92237a9ca02e0c43f57fd46
+        $ mvn install -N
+        $ cd core
+        $ mvn install -N
+        $ cd xml
+        $ mvn clean install -Dmaven.test.skip=true
+
+
+
+Compiling Berrysys SigTran USSDGW.
+
+        $ mvn clean install
+
+Running the USSDGW:
+
+        Assuming that the reader has a shell with
+        the project directory as working directory,
+        then just execute the following commands:
+
+        $ mkdir ./target/jsw/berrysys-ussdgw/logs
+        $ chmod a+x ./target/jsw/berrysys-ussdgw/bin/*
+        $ cd ./target/jsw/berrysys-ussdgw/bin/
+        $ ./berrysys-ussdgw start
+
+Applying Custom Configurations
+
+        Assuming that the reader has a shell
+        with a working directory in the jsw created
+        by the maven install:
+
+        $ cd ../etc
+        $ jar -xf  ../lib/ussdgw-1.00.jar\
+          log4j2.xml app-context.xml log4j.properties
+
+        you can edit the app-context.xml and the lo4j files
+        that were extracted on the etc dir of jsw.
+
+        The USSDGW can be configured through spring beans
+        Look at the example file: app-context.xml
+
+
+BerrySys SigTran USSDGW Usage
+
+        In the app-context.xml it is possible to configure:
+
+        * SS7 Layer.
+        * The HTTP port to what USSDGW will be listening for
+          network initiated traffic.
+        * The routing table for initial USSD strings.
+
+        For the port that it is already on the example,
+        The ussdgw provides the following interface:
+
+        http://127.0.0.1:8000/ussdgw
+
+        This interface allows to inject network initiated traffic.
+        It can be either: processUnstructuredSSRequest
+        or unstructuredSSNotifyRequest.
+
+
+        The routing table allows the GW to route traffic from
+        a specific tcap begin ussd string, and the subsequent
+        tcap packages of the same transaction id.
+
+
+
+
+        The data interchange between applications and gw looks like this:
+
+        Begin (Mobile Station initiated):
+
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <dialog type="BEGIN" id="2">
+                <destinationReference number="204208300008002"
+                nai="international_number" npi="land_mobile"/>
+                <originationReference number="31628968300"
+                nai="international_number" npi="land_mobile"/>
+                <processUnstructuredSSRequest invokeId="1"
+                dataCodingScheme="15" string="*123*100#">
+                        <msisdn number="31628838002"
+                        nai="international_number" npi="ISDN"/>
+                </processUnstructuredSSRequest>
+        </dialog>
+
+        Continue (from http application):
+
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <dialog type="CONTINUE" id="2">
+                <unstructuredSSRequest invokeId="2"
+                dataCodingScheme="15"
+                string="Hello World&#10;
+                1. Balance&#10;"/>
+        </dialog>
+
+
+        Continue (From Mobile Station):
+
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <dialog type="CONTINUE" id="2">
+                <destinationReference number="204208300008002"
+                nai="international_number" npi="land_mobile"/>
+                <originationReference number="31628968300"
+                nai="international_number" npi="land_mobile"/>
+                <unstructuredSSResponse invokeId="1"
+                dataCodingScheme="15" string="1"/>
+        </dialog>
+
+        End (From Http application)
+
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <dialog type="END" id="2">
+                <processUnstructuredSSResponse invokeId="1"
+                dataCodingScheme="15" string="Your balance is 100 USD"/>
+        </dialog>
+
+
+        Network Initiated USSD Traffic.
+
+        Begin (From Http application):
+
+
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <dialog type="BEGIN" id="1234">
+                <destinationReference nai="international_number"
+                npi="land_mobile" number="31628838002"/>
+                <originationReference nai="international_number"
+                npi="land_mobile" number="31628968300"/>
+                <unstructuredSSNotifyRequest invokeId="0"
+                dataCodingScheme="15"
+                string="Your new balance is 10 USD"/>
+        </dialog>
+
+
+        <?xml version="1.0" encoding="UTF-8" ?>
+        <dialog type="BEGIN" id="2">
+                <destinationReference number="31628838002"
+                nai="international_number" npi="land_mobile"/>
+                <originationReference number="31628968300"
+                nai="international_number" npi="land_mobile"/>
+                <unstructuredSSRequest invokeId="1"
+                dataCodingScheme="15" string="Hello Network initiated Req!">
+                </unstructuredSSRequest>
+        </dialog>
+        
+        
+Internals
+
+        BerrySys SigTran USSDGW relies on jss7 from mobicents,
+        jss7 is used in Standalone mode. The initialization
+        of the SCTP Server in what all the traffic passes, is located
+        in the class com.berrysys.ussdgw.DialogListener
+        
+        This class is the core of the project.
+        Look at the initializeStack() method for details of
+        how to initialize the jss7 in standalone mode.
+        
+        The DialogListener class implements two interfaces from jss7:
+        MAPDialogListener, MAPServiceSupplementaryListener.
+        
+        These interfaces allows the DialogListener to receive
+        dialog events from the TCAP Layer.
+        When a packet arrives to the SCTP server implemmented by
+        the DialogListener, the propper method is invoked.
+        
+        BerrySys USSDGW has the following member:
+        Cache<String, Session> __cache
+        This member implemments the cache in what it is stored
+        information related to the TCAP transaction.
+        Imagine a TCAP Transaction as a session object in web
+        terminology. This member is like a HashTable,
+        Where the keys are strings, are the values
+        are instances of com.berrysys.ussdgw.Session.
+        The Session object holds information related to
+        the tcap transaction, the dialogId, the msisdn, the url
+        of the http application to what the traffic is routed, 
+        and a HttpClientContext instance in order to hold
+        the cookies that are interchanged with the http application
+        and the berrysys ussdgw.
+        
+        The size of the cache is 32,768 by default, but you can
+        increase it through the system property: 
+        ussdgw.cache.size
+        
+        The time out of every key is 600 seconds, but you can
+        increase it through the system property:
+        ussdgw.session.timeout
+        
+        The HTTP Server that listens to network initiated ussd traffic
+        is implemmented through an embedded jetty, look at the method
+        DialogListener.initHttpServer() for details.
+        
+        It HawtDispatch to process requests asynchronouly.
+        The queue for pending requests can be configured through
+        the system property:
+        ussdgw.pqueue.size
+        
+        By default is 1000, this queue size is configured per core.
+                
+        Note for web developers:
+        The dialog id is mapped to the transaction id of the tcap layer,
+        this means that the dialog id remains the same for the entire
+        transaction. The invokeId represents an instance of a component wrapped
+        by the tcap layer. Most of the time the ussd app developers increment
+        this value by 1 to identify a component in a tcap transaction id.		        

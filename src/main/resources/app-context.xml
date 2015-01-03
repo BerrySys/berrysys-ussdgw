@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:c="http://www.springframework.org/schema/c" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd 
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<context:component-scan base-package="com.berrysys.ussdgw" />
+	<util:list id="sctpServerList" value-type="com.berrysys.ussdgw.DialogListener">
+		<bean class="com.berrysys.ussdgw.DialogListener">
+
+
+
+			<property name="serverConfig">
+				<bean class="com.berrysys.ussdgw.ServerConfig">
+					<property name="httpPort" value="8000" />
+					<property name="clientSpc" value="1" />
+					<property name="serverSpc" value="2" />
+					<property name="clientSSN" value="8" />
+					<property name="serverSSN" value="8" />
+					<property name="networkIndicator" value="2" />
+					<property name="serviceIndicator" value="3" />
+					<!-- M3UA details -->
+					<property name="serverIP" value="0.0.0.0" />
+					<property name="clientIP" value="0.0.0.0" />
+
+					<property name="serverPort" value="3434" />
+					<property name="clientPort" value="2345" />
+
+					<property name="routingContext" value="100" />
+					<property name="serverAssociationName" value="serverAsscoiation" />
+					<property name="clientAssociationName" value="clientAsscoiation" />
+
+					<property name="serverName" value="USSDGW0" />
+
+					<property name="sccpServerAddress">
+						<bean class="org.mobicents.protocols.ss7.sccp.parameter.SccpAddress">
+							<!-- Routing indicator -->
+							<constructor-arg
+								value="#{T(org.mobicents.protocols.ss7.indicator.RoutingIndicator).ROUTING_BASED_ON_DPC_AND_SSN}" />
+							<!-- SERVER SPC (MTP Details) -->
+							<constructor-arg value="2" />
+
+							<!-- <constructor-arg value="#{T(org.mobicents.protocols.ss7.sccp.parameter.GlobalTitle).getInstance('XXXXXXXXXXX')}" 
+								/> -->
+							<constructor-arg>
+								<null />
+							</constructor-arg>
+							<!-- SSN -->
+							<constructor-arg value="8" />
+
+						</bean>
+					</property>
+					<property name="sccpClientAddress">
+						<bean class="org.mobicents.protocols.ss7.sccp.parameter.SccpAddress">
+							<!-- Routing indicator -->
+							<constructor-arg
+								value="#{ T(org.mobicents.protocols.ss7.indicator.RoutingIndicator).ROUTING_BASED_ON_DPC_AND_SSN}" />
+							<!-- SERVER SPC (MTP Details) -->
+							<constructor-arg value="1" />
+							<!-- GLOBAL TITLE -->
+							<!-- <constructor-arg value="#{T(org.mobicents.protocols.ss7.sccp.parameter.GlobalTitle).getInstance('XXXXXXXXXXX')}" 
+								/> -->
+							<constructor-arg>
+								<null />
+							</constructor-arg>
+
+							<!-- SSN -->
+							<constructor-arg value="8" />
+
+						</bean>
+					</property>
+
+					<property name="routeList">
+						<util:list>
+
+							<bean class="com.berrysys.ussdgw.Route">
+								<property name="destUrl" value="http://192.168.0.29:8080/http-app/test" />
+								<property name="ussdStringRegex" value="(\*)123(\*|#).+" />
+							</bean>
+
+							<bean class="com.berrysys.ussdgw.Route">
+								<property name="destUrl" value="http://192.168.0.29:8080/http-app/test" />
+								<property name="ussdStringRegex" value="(\*)234(\*|#).+" />
+							</bean>
+
+							<bean class="com.berrysys.ussdgw.Route">
+								<property name="destUrl" value="http://192.168.0.29:8080/http-app/test" />
+								<property name="ussdStringRegex" value=".+" />
+							</bean>
+
+						</util:list>
+
+					</property>
+
+				</bean>
+			</property>
+		</bean>
+	</util:list>
+
+</beans>
