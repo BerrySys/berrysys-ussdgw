@@ -304,6 +304,14 @@
 			<artifactId>congestion</artifactId>
 			<version>${jss7.version}</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.restcomm.protocols.ss7.m3ua/m3ua-impl -->
+		<dependency>
+			<groupId>org.restcomm.protocols.ss7.m3ua</groupId>
+			<artifactId>m3ua-impl</artifactId>
+			<version>${jss7.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<developers>
