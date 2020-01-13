@@ -4,10 +4,9 @@
 
 	<groupId>com.berrysys.ussdgw</groupId>
 	<artifactId>berrysys-ussdgw</artifactId>
-	<version>1.00</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>berrysys-ussdgw</name>
 	<description>BerrySys USSD Gateway SCTP Server</description>
-
 
 	<properties>
 		<jss7.version>8.0.112</jss7.version>
