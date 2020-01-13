@@ -23,7 +23,7 @@
 		<stream.version>1.0.0.CR1</stream.version>
 		<sctp.version>1.4.0.FINAL</sctp.version>
 		<commons.version>1.0.0.CR1</commons.version>
-		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
+		<org.springframework.version>5.2.2.RELEASE</org.springframework.version>
 		<hawtdispatch.version>1.18</hawtdispatch.version>
 		<ss7.congestion.version>2.0.0.FINAL</ss7.congestion.version>
 		<ss7.management.version>2.0.0-SNAPSHOT</ss7.management.version>
