@@ -193,19 +193,6 @@
 			<version>${ss7.management.version}</version>
 		</dependency>
 
-<!--		&lt;!&ndash; Hardware Dahdi Java &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<artifactId>mobicents-dahdi</artifactId>-->
-<!--			<groupId>org.mobicents.protocols.ss7.hardware</groupId>-->
-<!--			<version>${jss7.version}</version>-->
-<!--		</dependency>-->
-
-<!--		&lt;!&ndash; Hardware Dialogic Java &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<artifactId>mobicents-dialogic</artifactId>-->
-<!--			<groupId>org.mobicents.protocols.ss7.hardware</groupId>-->
-<!--			<version>${jss7.version}</version>-->
-<!--		</dependency>-->
 
 		<!-- MTP -->
 		<dependency>
