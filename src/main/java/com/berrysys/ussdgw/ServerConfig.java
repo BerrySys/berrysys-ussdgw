@@ -25,6 +25,9 @@ import org.mobicents.protocols.ss7.m3ua.ExchangeType;
 import org.mobicents.protocols.ss7.m3ua.Functionality;
 import org.mobicents.protocols.ss7.m3ua.IPSPType;
 import org.mobicents.protocols.ss7.m3ua.parameter.TrafficModeType;
+import org.mobicents.protocols.ss7.sccp.impl.parameter.GlobalTitle0100Impl;
+import org.mobicents.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
+import org.mobicents.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.mobicents.protocols.ss7.sccp.parameter.SccpAddress;
 
 /**
@@ -201,6 +204,9 @@ public class ServerConfig {
   /** The server spc. */
   int serverSpc = 2;
 
+  GlobalTitle clientGt = new GlobalTitle0100Impl();
+          GlobalTitle serverGT =  new GlobalTitle0100Impl();;
+
   /** The network indicator. */
   int networkIndicator = 2;
 
@@ -241,12 +247,12 @@ public class ServerConfig {
   String serverName = "testserver";
 
   /** The sccp client address. */
-  SccpAddress sccpClientAddress = new SccpAddress(
-      RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, clientSpc, null, ssn);
+  SccpAddress sccpClientAddress = new SccpAddressImpl(
+      RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, clientGt, 0, ssn);
 
   /** The sccp server address. */
-  SccpAddress sccpServerAddress = new SccpAddress(
-      RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, serverSpc, null, ssn);
+  SccpAddress sccpServerAddress = new SccpAddressImpl(
+      RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, serverGT, 0, ssn);
 
   private String[] extraHostAddresses = null;
 

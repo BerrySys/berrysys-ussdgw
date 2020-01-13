@@ -25,17 +25,16 @@ import java.io.StringWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import javolution.util.FastList;
 import javolution.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.mobicents.protocols.ss7.map.api.MAPException;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.MAPDialogSupplementary;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.ProcessUnstructuredSSRequest;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyRequest;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
-import org.mobicents.ussdgateway.Dialog;
+import org.mobicents.protocols.ss7.map.api.MAPMessage;
+import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
 import org.mobicents.ussdgateway.EventsSerializeFactory;
+import org.mobicents.ussdgateway.XmlMAPDialog;
 
 /**
  * The Class HttpUtils.
@@ -149,13 +148,13 @@ public class HttpUtils {
 
       try {
         eventsSerializeFactory = new EventsSerializeFactory();
-      } catch (XMLStreamException e) {
+      } catch (Exception e) {
         // TODO Auto-generated catch block
         log.catching(e);
       }
-      Dialog dialog = null;
+      XmlMAPDialog xmlDialog = null;
       try {
-        dialog = eventsSerializeFactory.deserialize(payload.getBytes());
+        xmlDialog = eventsSerializeFactory.deserialize(payload.getBytes());
       } catch (XMLStreamException e) {
 
         log.catching(e);
@@ -163,48 +162,8 @@ public class HttpUtils {
 
       MAPDialogSupplementary mapDialogSupplementary = null;
 
+        processXmlMAPDialog(xmlDialog,mapDialogSupplementary,dialogListenerInstance,ussdAppUrl);
 
-      switch (dialog.getMAPMessage().getMessageType()) {
-        
-        case unstructuredSSRequest_Request:
-
-          UnstructuredSSRequest unstructuredSSRequestInd = null;
-          unstructuredSSRequestInd =
-              (UnstructuredSSRequest) dialog.getMAPMessage();
-          unstructuredSSRequestInd.setInvokeId(1);
-          mapDialogSupplementary = unstructuredSSRequestInd.getMAPDialog();
-
-          try {
-            dialogListenerInstance.addUnstructuredSSRequestNetworkInitiated(
-                unstructuredSSRequestInd, mapDialogSupplementary, ussdAppUrl,
-                dialog);
-          } catch (Exception e1) {
-            // TODO Auto-generated catch block
-            log.catching(e1);
-          }
-
-
-        
-        case unstructuredSSNotify_Request:
-
-          UnstructuredSSNotifyRequest unstructuredSSNotifyRequest =
-              (UnstructuredSSNotifyRequest) dialog.getMAPMessage();
-
-          mapDialogSupplementary = unstructuredSSNotifyRequest.getMAPDialog();
-
-          unstructuredSSNotifyRequest.setInvokeId(1);
-          try {
-            dialogListenerInstance.addUnstructuredSSNotifyRequest(
-                unstructuredSSNotifyRequest, mapDialogSupplementary,
-                ussdAppUrl, dialog);
-          } catch (MAPException e) {
-            log.catching(e);
-          }
-          break;
-        default:
-          log.info(String.format("Unknown message: %s", dialog));
-          break;
-      }
     } catch (Exception e) {
       log.catching(e);
     } finally {
@@ -212,5 +171,104 @@ public class HttpUtils {
     }
     log.exit();
   }
+   static void processXmlMAPDialog(XmlMAPDialog xmlMAPDialog, MAPDialogSupplementary mapDialog, DialogListener dialogListenerInstance,String ussdAppUrl )
+          throws MAPException {
+    FastList<MAPMessage> mapMessages = xmlMAPDialog.getMAPMessages();
+    if (mapMessages != null) {
+      for (FastList.Node<MAPMessage> n = mapMessages.head(), end = mapMessages.tail(); (n = n.getNext()) != end;) {
+        Long invokeId = processMAPMessageFromApplication(n.getValue(), mapDialog, xmlMAPDialog.getCustomInvokeTimeOut(), dialogListenerInstance, ussdAppUrl, xmlMAPDialog);
+      }
+    }
+  }
 
+  static  Long processMAPMessageFromApplication(MAPMessage mapMessage,
+                                                  MAPDialogSupplementary mapDialogSupplementary, Integer customInvokeTimeout, DialogListener dialogListenerInstance, String ussdAppUrl, XmlMAPDialog xmlDialog) throws MAPException {
+    switch (mapMessage.getMessageType()) {
+      case unstructuredSSRequest_Request:
+
+
+        UnstructuredSSRequest unstructuredSSRequestInd = null;
+        unstructuredSSRequestInd =
+                (UnstructuredSSRequest) mapMessage;
+        unstructuredSSRequestInd.setInvokeId(1);
+        mapDialogSupplementary = unstructuredSSRequestInd.getMAPDialog();
+
+        try {
+          dialogListenerInstance.addUnstructuredSSRequestNetworkInitiated(
+                  unstructuredSSRequestInd, mapDialogSupplementary, ussdAppUrl,
+                  xmlDialog);
+        } catch (Exception e1) {
+          // TODO Auto-generated catch block
+          log.catching(e1);
+        }
+
+
+
+        try {
+          dialogListenerInstance.addUnstructuredSSRequestNetworkInitiated(
+                  unstructuredSSRequestInd, mapDialogSupplementary, ussdAppUrl,
+                  xmlDialog);
+        } catch (Exception e1) {
+          // TODO Auto-generated catch block
+          log.catching(e1);
+        }
+
+        UnstructuredSSRequest unstructuredSSRequest = (UnstructuredSSRequest) mapMessage;
+        if (customInvokeTimeout != null) {
+          return mapDialogSupplementary.addUnstructuredSSRequest(customInvokeTimeout,
+                  unstructuredSSRequest.getDataCodingScheme(), unstructuredSSRequest.getUSSDString(),
+                  unstructuredSSRequest.getAlertingPattern(), unstructuredSSRequest.getMSISDNAddressString());
+        }
+        return mapDialogSupplementary.addUnstructuredSSRequest(unstructuredSSRequest.getDataCodingScheme(),
+                unstructuredSSRequest.getUSSDString(), unstructuredSSRequest.getAlertingPattern(),
+                unstructuredSSRequest.getMSISDNAddressString());
+      case unstructuredSSRequest_Response:
+        UnstructuredSSResponse unstructuredSSResponse = (UnstructuredSSResponse) mapMessage;
+        mapDialogSupplementary.addUnstructuredSSResponse(unstructuredSSResponse.getInvokeId(),
+                unstructuredSSResponse.getDataCodingScheme(), unstructuredSSResponse.getUSSDString());
+        break;
+
+      case processUnstructuredSSRequest_Response:
+        ProcessUnstructuredSSResponse processUnstructuredSSResponse = (ProcessUnstructuredSSResponse) mapMessage;
+        mapDialogSupplementary.addProcessUnstructuredSSResponse(processUnstructuredSSResponse.getInvokeId(),
+                processUnstructuredSSResponse.getDataCodingScheme(), processUnstructuredSSResponse.getUSSDString());
+        return processUnstructuredSSResponse.getInvokeId();
+      case unstructuredSSNotify_Request:
+
+        UnstructuredSSNotifyRequest unstructuredSSNotifyRequest =
+                (UnstructuredSSNotifyRequest) mapMessage;
+
+        mapDialogSupplementary = unstructuredSSNotifyRequest.getMAPDialog();
+
+        unstructuredSSNotifyRequest.setInvokeId(1);
+        try {
+          dialogListenerInstance.addUnstructuredSSNotifyRequest(
+                  unstructuredSSNotifyRequest, mapDialogSupplementary,
+                  ussdAppUrl, xmlDialog);
+        } catch (MAPException e) {
+          log.catching(e);
+        }
+      case unstructuredSSNotify_Response:
+        // notify, this means dialog will end;
+        final UnstructuredSSNotifyResponse ntfyResponse = (UnstructuredSSNotifyResponse) mapMessage;
+        mapDialogSupplementary.addUnstructuredSSNotifyResponse(ntfyResponse.getInvokeId());
+        break;
+      case processUnstructuredSSRequest_Request:
+        ProcessUnstructuredSSRequest processUnstructuredSSRequest = (ProcessUnstructuredSSRequest) mapMessage;
+        if (customInvokeTimeout != null) {
+          return mapDialogSupplementary.addProcessUnstructuredSSRequest(customInvokeTimeout,
+                  processUnstructuredSSRequest.getDataCodingScheme(),
+                  processUnstructuredSSRequest.getUSSDString(),
+                  processUnstructuredSSRequest.getAlertingPattern(),
+                  processUnstructuredSSRequest.getMSISDNAddressString());
+        }
+        return mapDialogSupplementary.addProcessUnstructuredSSRequest(
+                processUnstructuredSSRequest.getDataCodingScheme(), processUnstructuredSSRequest.getUSSDString(),
+                processUnstructuredSSRequest.getAlertingPattern(),
+                processUnstructuredSSRequest.getMSISDNAddressString());
+
+    }// switch
+
+    return null;
+  }
 }

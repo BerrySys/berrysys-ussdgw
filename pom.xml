@@ -8,8 +8,9 @@
 	<name>berrysys-ussdgw</name>
 	<description>BerrySys USSD Gateway SCTP Server</description>
 
+
 	<properties>
-		<jss7.version>2.1.0.FINAL</jss7.version>
+		<jss7.version>8.0.112</jss7.version>
 		<mobicents.tools.mavenplugin.eclipse.version>1.0.0.FINAL</mobicents.tools.mavenplugin.eclipse.version>
 		<concurrent.version>1.3.4</concurrent.version>
 		<log4j.version>2.1</log4j.version>
@@ -28,7 +29,7 @@
 		<ss7.congestion.version>2.0.0.FINAL</ss7.congestion.version>
 		<ss7.management.version>2.0.0-SNAPSHOT</ss7.management.version>
 		<ss7.clock.version>2.0.0-SNAPSHOT</ss7.clock.version>
-		<org.mobicents.ussd.version>1.0.0-SNAPSHOT</org.mobicents.ussd.version>
+		<org.mobicents.ussd.version>7.1.63</org.mobicents.ussd.version>
 		<httpclient.version>4.3.3</httpclient.version>
 		<commons-io.version>2.4</commons-io.version>
 		<jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
@@ -193,19 +194,19 @@
 			<version>${ss7.management.version}</version>
 		</dependency>
 
-		<!-- Hardware Dahdi Java -->
-		<dependency>
-			<artifactId>mobicents-dahdi</artifactId>
-			<groupId>org.mobicents.protocols.ss7.hardware</groupId>
-			<version>${jss7.version}</version>
-		</dependency>
+<!--		&lt;!&ndash; Hardware Dahdi Java &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<artifactId>mobicents-dahdi</artifactId>-->
+<!--			<groupId>org.mobicents.protocols.ss7.hardware</groupId>-->
+<!--			<version>${jss7.version}</version>-->
+<!--		</dependency>-->
 
-		<!-- Hardware Dialogic Java -->
-		<dependency>
-			<artifactId>mobicents-dialogic</artifactId>
-			<groupId>org.mobicents.protocols.ss7.hardware</groupId>
-			<version>${jss7.version}</version>
-		</dependency>
+<!--		&lt;!&ndash; Hardware Dialogic Java &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<artifactId>mobicents-dialogic</artifactId>-->
+<!--			<groupId>org.mobicents.protocols.ss7.hardware</groupId>-->
+<!--			<version>${jss7.version}</version>-->
+<!--		</dependency>-->
 
 		<!-- MTP -->
 		<dependency>
@@ -396,7 +397,6 @@
 				<configuration>
 					<source>${compile.source}</source>
 					<target>${compile.source}</target>
-					<debug>${compile.debug}</debug>
 				</configuration>
 			</plugin>
 			<plugin>

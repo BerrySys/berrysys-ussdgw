@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 
+import javolution.util.FastList;
 import javolution.xml.stream.XMLStreamException;
 
 import org.apache.http.client.ClientProtocolException;
@@ -67,19 +68,12 @@ import org.mobicents.protocols.ss7.map.api.primitives.AddressString;
 import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.MAPDialogSupplementary;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.MAPServiceSupplementaryListener;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.ProcessUnstructuredSSRequest;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.ProcessUnstructuredSSResponse;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyRequest;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
-import org.mobicents.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
+import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
 import org.mobicents.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.mobicents.protocols.ss7.tcap.api.MessageType;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
-import org.mobicents.ussdgateway.Dialog;
+import org.mobicents.ussdgateway.XmlMAPDialog;
 import org.mobicents.ussdgateway.DialogType;
 import org.mobicents.ussdgateway.EventsSerializeFactory;
 
@@ -94,7 +88,6 @@ import com.google.common.io.ByteStreams;
  * the dialog event occurs, that object's appropriate
  * method is invoked.
  *
- * @see DialogEvent
  */
 public class DialogListener implements MAPDialogListener,
     MAPServiceSupplementaryListener {
@@ -171,7 +164,7 @@ public class DialogListener implements MAPDialogListener,
    */
   protected void addUnstructuredSSNotifyRequest(
       UnstructuredSSNotifyRequest unstructuredSSNotifyRequest,
-      MAPDialogSupplementary mapDialogSupplementary, String url, Dialog dialog)
+      MAPDialogSupplementary mapDialogSupplementary, String url, XmlMAPDialog dialog)
       throws MAPException {
 
     log.entry(unstructuredSSNotifyRequest, mapDialogSupplementary, url, dialog);
@@ -180,15 +173,15 @@ public class DialogListener implements MAPDialogListener,
       MAPParameterFactory mapParameterFactory =
           this.mapProviderInstance.getMAPParameterFactory();
       ISDNAddressString origReference =
-          mapParameterFactory.createISDNAddressString(dialog.getOrigReference()
+          mapParameterFactory.createISDNAddressString(dialog.getReceivedOrigReference()
               .getAddressNature(),
-              dialog.getOrigReference().getNumberingPlan(), dialog
-                  .getOrigReference().getAddress());
+              dialog.getReceivedOrigReference().getNumberingPlan(), dialog
+                  .getReceivedOrigReference().getAddress());
       ISDNAddressString destReference =
-          mapParameterFactory.createISDNAddressString(dialog.getDestReference()
+          mapParameterFactory.createISDNAddressString(dialog.getReceivedDestReference()
               .getAddressNature(),
-              dialog.getDestReference().getNumberingPlan(), dialog
-                  .getDestReference().getAddress());
+              dialog.getReceivedDestReference().getNumberingPlan(), dialog
+                  .getReceivedDestReference().getAddress());
 
       mapDialogSupplementary =
           this.mapProviderInstance.getMAPServiceSupplementary()
@@ -204,7 +197,7 @@ public class DialogListener implements MAPDialogListener,
     Session session = null;
     try {
       session =
-          getSession(dialogId, dialog.getDestReference().getAddress(), url);
+          getSession(dialogId, dialog.getReceivedDestReference().getAddress(), url);
     } catch (ExecutionException e) {
       // TODO Auto-generated catch block
       log.catching(e);
@@ -417,7 +410,7 @@ public class DialogListener implements MAPDialogListener,
         if (xmlFactory == null)
           try {
             xmlFactory = new EventsSerializeFactory();
-          } catch (XMLStreamException e) {
+          } catch (Exception e) {
 
             log.catching(e);
           }
@@ -479,7 +472,7 @@ public class DialogListener implements MAPDialogListener,
   private void initM3uaStack() throws Exception {
     log.entry();
     this.m3uaManagementImplInstance =
-        new M3UAManagementImpl(this.serverConfig.getServerName());
+        new M3UAManagementImpl(this.serverConfig.getServerName(),"dummyProductName");
     this.m3uaManagementImplInstance
         .setTransportManagement(this.managementImplInstance);
     this.m3uaManagementImplInstance.start();
@@ -580,7 +573,8 @@ public class DialogListener implements MAPDialogListener,
 
 
     try {
-      this.sccpStackImplInstance.getRouter().addMtp3ServiceAccessPoint(
+      this.sccpStackImplInstance.getRouter(). addMtp3ServiceAccessPoint(
+              1,//example
           this.getServerConfig().getMtp3ServicePointId(),
           this.getServerConfig().getMtp3Id(),
           this.getServerConfig().getServerSpc(),
@@ -768,6 +762,11 @@ public class DialogListener implements MAPDialogListener,
     log.exit();
   }
 
+  @Override
+  public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString addressString, AddressString addressString1, AddressString addressString2, AddressString addressString3) {
+
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -778,7 +777,6 @@ public class DialogListener implements MAPDialogListener,
    * org.mobicents.protocols.ss7.map.api.primitives.IMSI,
    * org.mobicents.protocols.ss7.map.api.primitives.AddressString)
    */
-  @Override
   public void onDialogRequestEricsson(MAPDialog mapDialog,
       AddressString destReference, AddressString origReference, IMSI imsi,
       AddressString vlr) {
@@ -852,6 +850,76 @@ public class DialogListener implements MAPDialogListener,
     log.exit();
   }
 
+  @Override
+  public void onRegisterSSRequest(RegisterSSRequest registerSSRequest) {
+
+  }
+
+  @Override
+  public void onRegisterSSResponse(RegisterSSResponse registerSSResponse) {
+
+  }
+
+  @Override
+  public void onEraseSSRequest(EraseSSRequest eraseSSRequest) {
+
+  }
+
+  @Override
+  public void onEraseSSResponse(EraseSSResponse eraseSSResponse) {
+
+  }
+
+  @Override
+  public void onActivateSSRequest(ActivateSSRequest activateSSRequest) {
+
+  }
+
+  @Override
+  public void onActivateSSResponse(ActivateSSResponse activateSSResponse) {
+
+  }
+
+  @Override
+  public void onDeactivateSSRequest(DeactivateSSRequest deactivateSSRequest) {
+
+  }
+
+  @Override
+  public void onDeactivateSSResponse(DeactivateSSResponse deactivateSSResponse) {
+
+  }
+
+  @Override
+  public void onInterrogateSSRequest(InterrogateSSRequest interrogateSSRequest) {
+
+  }
+
+  @Override
+  public void onInterrogateSSResponse(InterrogateSSResponse interrogateSSResponse) {
+
+  }
+
+  @Override
+  public void onGetPasswordRequest(GetPasswordRequest getPasswordRequest) {
+
+  }
+
+  @Override
+  public void onGetPasswordResponse(GetPasswordResponse getPasswordResponse) {
+
+  }
+
+  @Override
+  public void onRegisterPasswordRequest(RegisterPasswordRequest registerPasswordRequest) {
+
+  }
+
+  @Override
+  public void onRegisterPasswordResponse(RegisterPasswordResponse registerPasswordResponse) {
+
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -863,13 +931,21 @@ public class DialogListener implements MAPDialogListener,
   public void onProcessUnstructuredSSRequest(
       ProcessUnstructuredSSRequest procUnstrReqInd) {
     log.entry(procUnstrReqInd);
-    MAPDialogSupplementary dialog = procUnstrReqInd.getMAPDialog();
+    MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
+//public XmlMAPDialog(MAPApplicationContext appCntx, SccpAddress localAddress, SccpAddress remoteAddress,
+//			Long localId, Long remoteId, AddressString destReference, AddressString origReference) {
 
-    org.mobicents.ussdgateway.Dialog xmlDialog =
-        new org.mobicents.ussdgateway.Dialog(this.getXmlDialogType(dialog
-            .getTCAPMessageType()), dialog.getLocalDialogId(),
-            dialog.getReceivedDestReference(),
-            dialog.getReceivedOrigReference(), procUnstrReqInd);
+    DialogType dType = this.getXmlDialogType(mapDialog
+            .getTCAPMessageType());
+    org.mobicents.ussdgateway.XmlMAPDialog xmlDialog = new XmlMAPDialog(mapDialog.getApplicationContext(), mapDialog.getLocalAddress(),
+            mapDialog.getRemoteAddress(), mapDialog.getLocalDialogId(), mapDialog.getRemoteDialogId(),
+            mapDialog.getReceivedDestReference(), mapDialog.getReceivedOrigReference());
+
+    xmlDialog.setReturnMessageOnError(mapDialog.getReturnMessageOnError());
+    xmlDialog.setNetworkId(mapDialog.getNetworkId());
+    xmlDialog.setTCAPMessageType(mapDialog.getTCAPMessageType());
+
+
 
     byte[] serializedEvent = null;
     try {
@@ -887,44 +963,20 @@ public class DialogListener implements MAPDialogListener,
               Charset.defaultCharset()));
 
       byte[] xmlPayLoad =
-          this.sendHttpRequest(serializedEvent, String.valueOf(dialog
+          this.sendHttpRequest(serializedEvent, String.valueOf(mapDialog
               .getLocalDialogId()), procUnstrReqInd.getMSISDNAddressString()
               .getAddress(), url);
 
       if (xmlPayLoad == null || xmlPayLoad.length <= 0) {
         log.error("Received invalid payload from http server");
       }
-      Dialog dialogResponse = this.getXmlFactory().deserialize(xmlPayLoad);
+      XmlMAPDialog dialogResponse = this.getXmlFactory().deserialize(xmlPayLoad);
       if (dialogResponse == null) {
         log.error("Received Success Response but couldn't deserialize to Dialog. Dialog is null");
       }
 
-      MAPMessage mapMessage = null;
-      if (dialogResponse != null) {
-        mapMessage = dialogResponse.getMAPMessage();
-      }
 
-      switch (mapMessage.getMessageType()) {
-        case unstructuredSSRequest_Request:
-
-          this.addUnstructuredSSRequest((UnstructuredSSRequest) mapMessage,
-              dialog);
-          break;
-        case processUnstructuredSSRequest_Response:
-          
-          this.__cache.invalidate(dialog.getLocalDialogId());
-          ProcessUnstructuredSSResponse ussdResponse =
-              (ProcessUnstructuredSSResponse) mapMessage;
-
-          
-          dialog.addProcessUnstructuredSSResponse(ussdResponse.getInvokeId(),
-              ussdResponse.getDataCodingScheme(), ussdResponse.getUSSDString());
-          break;
-
-        default:
-          log.error("Received Success Response but unidentified response body");
-          break;
-      }
+      processXmlMAPDialog(xmlDialog,mapDialog);
 
     } catch (Exception e) {
       log.catching(e);
@@ -945,7 +997,75 @@ public class DialogListener implements MAPDialogListener,
     log.entry(procUnstrResInd);
     log.exit();
   }
+  protected void processXmlMAPDialog(XmlMAPDialog xmlMAPDialog, MAPDialogSupplementary mapDialog)
+          throws MAPException {
+    FastList<MAPMessage> mapMessages = xmlMAPDialog.getMAPMessages();
+    if (mapMessages != null) {
+      for (FastList.Node<MAPMessage> n = mapMessages.head(), end = mapMessages.tail(); (n = n.getNext()) != end;) {
+        Long invokeId = this.processMAPMessageFromApplication(n.getValue(), mapDialog, xmlMAPDialog.getCustomInvokeTimeOut());
+      }
+    }
+  }
 
+
+  protected Long processMAPMessageFromApplication(MAPMessage mapMessage,
+                                                  MAPDialogSupplementary mapDialogSupplementary, Integer customInvokeTimeout) throws MAPException {
+    switch (mapMessage.getMessageType()) {
+      case unstructuredSSRequest_Request:
+        UnstructuredSSRequest unstructuredSSRequest = (UnstructuredSSRequest) mapMessage;
+        if (customInvokeTimeout != null) {
+          return mapDialogSupplementary.addUnstructuredSSRequest(customInvokeTimeout,
+                  unstructuredSSRequest.getDataCodingScheme(), unstructuredSSRequest.getUSSDString(),
+                  unstructuredSSRequest.getAlertingPattern(), unstructuredSSRequest.getMSISDNAddressString());
+        }
+        return mapDialogSupplementary.addUnstructuredSSRequest(unstructuredSSRequest.getDataCodingScheme(),
+                unstructuredSSRequest.getUSSDString(), unstructuredSSRequest.getAlertingPattern(),
+                unstructuredSSRequest.getMSISDNAddressString());
+      case unstructuredSSRequest_Response:
+        UnstructuredSSResponse unstructuredSSResponse = (UnstructuredSSResponse) mapMessage;
+        mapDialogSupplementary.addUnstructuredSSResponse(unstructuredSSResponse.getInvokeId(),
+                unstructuredSSResponse.getDataCodingScheme(), unstructuredSSResponse.getUSSDString());
+        break;
+
+      case processUnstructuredSSRequest_Response:
+        ProcessUnstructuredSSResponse processUnstructuredSSResponse = (ProcessUnstructuredSSResponse) mapMessage;
+        mapDialogSupplementary.addProcessUnstructuredSSResponse(processUnstructuredSSResponse.getInvokeId(),
+                processUnstructuredSSResponse.getDataCodingScheme(), processUnstructuredSSResponse.getUSSDString());
+        return processUnstructuredSSResponse.getInvokeId();
+      case unstructuredSSNotify_Request:
+        // notify, this means dialog will end;
+        final UnstructuredSSNotifyRequest ntfyRequest = (UnstructuredSSNotifyRequest) mapMessage;
+        if (customInvokeTimeout != null) {
+          return mapDialogSupplementary.addUnstructuredSSNotifyRequest(customInvokeTimeout,
+                  ntfyRequest.getDataCodingScheme(), ntfyRequest.getUSSDString(),
+                  ntfyRequest.getAlertingPattern(), ntfyRequest.getMSISDNAddressString());
+        }
+        return mapDialogSupplementary
+                .addUnstructuredSSNotifyRequest(ntfyRequest.getDataCodingScheme(), ntfyRequest.getUSSDString(),
+                        ntfyRequest.getAlertingPattern(), ntfyRequest.getMSISDNAddressString());
+      case unstructuredSSNotify_Response:
+        // notify, this means dialog will end;
+        final UnstructuredSSNotifyResponse ntfyResponse = (UnstructuredSSNotifyResponse) mapMessage;
+        mapDialogSupplementary.addUnstructuredSSNotifyResponse(ntfyResponse.getInvokeId());
+        break;
+      case processUnstructuredSSRequest_Request:
+        ProcessUnstructuredSSRequest processUnstructuredSSRequest = (ProcessUnstructuredSSRequest) mapMessage;
+        if (customInvokeTimeout != null) {
+          return mapDialogSupplementary.addProcessUnstructuredSSRequest(customInvokeTimeout,
+                  processUnstructuredSSRequest.getDataCodingScheme(),
+                  processUnstructuredSSRequest.getUSSDString(),
+                  processUnstructuredSSRequest.getAlertingPattern(),
+                  processUnstructuredSSRequest.getMSISDNAddressString());
+        }
+        return mapDialogSupplementary.addProcessUnstructuredSSRequest(
+                processUnstructuredSSRequest.getDataCodingScheme(), processUnstructuredSSRequest.getUSSDString(),
+                processUnstructuredSSRequest.getAlertingPattern(),
+                processUnstructuredSSRequest.getMSISDNAddressString());
+
+    }// switch
+
+    return null;
+  }
   /*
    * (non-Javadoc)
    * 
@@ -1025,12 +1145,12 @@ public class DialogListener implements MAPDialogListener,
 
     log.entry(unstrNotifyInd);
 
-    MAPDialogSupplementary dialog = unstrNotifyInd.getMAPDialog();
-    org.mobicents.ussdgateway.Dialog xmlDialog =
-        new org.mobicents.ussdgateway.Dialog(this.getXmlDialogType(dialog
-            .getTCAPMessageType()), dialog.getLocalDialogId(),
-            dialog.getReceivedDestReference(),
-            dialog.getReceivedOrigReference(), unstrNotifyInd);
+    MAPDialogSupplementary mapDialog = unstrNotifyInd.getMAPDialog();
+    org.mobicents.ussdgateway.XmlMAPDialog xmlDialog =
+        new org.mobicents.ussdgateway.XmlMAPDialog(mapDialog.getApplicationContext(),mapDialog.getLocalAddress(),mapDialog.getRemoteAddress(), mapDialog.getLocalDialogId(),
+                mapDialog.getRemoteDialogId(),
+                mapDialog.getReceivedDestReference(),
+                mapDialog.getReceivedOrigReference());
 
     byte[] serializedEvent = null;
 
@@ -1045,13 +1165,13 @@ public class DialogListener implements MAPDialogListener,
 
       byte[] xmlPayload =
           this.sendHttpRequest(serializedEvent,
-              String.valueOf(dialog.getLocalDialogId()), null, null);
+              String.valueOf(mapDialog.getLocalDialogId()), null, null);
 
 
       log.info(xmlPayload);
-      this.__cache.invalidate(dialog.getLocalDialogId());
+      this.__cache.invalidate(mapDialog.getLocalDialogId());
 
-      dialog.close(true);
+      mapDialog.close(true);
 
     } catch (Exception e) {
       log.catching(e);
@@ -1071,12 +1191,13 @@ public class DialogListener implements MAPDialogListener,
   public void onUnstructuredSSRequest(UnstructuredSSRequest unstrReqInd) {
     log.entry(unstrReqInd);
 
-    Dialog xmlDialog =
-        new Dialog(this.getXmlDialogType(unstrReqInd.getMAPDialog()
-            .getTCAPMessageType()), unstrReqInd.getMAPDialog()
-            .getLocalDialogId(), unstrReqInd.getMAPDialog()
-            .getReceivedDestReference(), unstrReqInd.getMAPDialog()
-            .getReceivedOrigReference(), unstrReqInd);
+    MAPDialogSupplementary mapDialog=unstrReqInd.getMAPDialog();
+
+    org.mobicents.ussdgateway.XmlMAPDialog xmlDialog =
+            new org.mobicents.ussdgateway.XmlMAPDialog(mapDialog.getApplicationContext(),mapDialog.getLocalAddress(),mapDialog.getRemoteAddress(), mapDialog.getLocalDialogId(),
+                    mapDialog.getRemoteDialogId(),
+                    mapDialog.getReceivedDestReference(),
+                    mapDialog.getReceivedOrigReference());
     try {
       byte[] serializedEvent = this.getXmlFactory().serialize(xmlDialog);
       log.info(new String(serializedEvent));
@@ -1097,12 +1218,12 @@ public class DialogListener implements MAPDialogListener,
   @Override
   public void onUnstructuredSSResponse(UnstructuredSSResponse unstrResInd) {
     log.entry(unstrResInd);
-    MAPDialogSupplementary dialog = unstrResInd.getMAPDialog();
-    org.mobicents.ussdgateway.Dialog xmlDialog =
-        new org.mobicents.ussdgateway.Dialog(this.getXmlDialogType(dialog
-            .getTCAPMessageType()), dialog.getLocalDialogId(),
-            dialog.getReceivedDestReference(),
-            dialog.getReceivedOrigReference(), unstrResInd);
+    MAPDialogSupplementary mapDialog = unstrResInd.getMAPDialog();
+    org.mobicents.ussdgateway.XmlMAPDialog xmlDialog =
+            new org.mobicents.ussdgateway.XmlMAPDialog(mapDialog.getApplicationContext(),mapDialog.getLocalAddress(),mapDialog.getRemoteAddress(), mapDialog.getLocalDialogId(),
+                    mapDialog.getRemoteDialogId(),
+                    mapDialog.getReceivedDestReference(),
+                    mapDialog.getReceivedOrigReference());
 
     byte[] serializedEvent = null;
 
@@ -1117,38 +1238,16 @@ public class DialogListener implements MAPDialogListener,
 
       byte[] xmlPayload =
           this.sendHttpRequest(serializedEvent,
-              String.valueOf(dialog.getLocalDialogId()), null, null);
+              String.valueOf(mapDialog.getLocalDialogId()), null, null);
 
-      Dialog dialogResponseUssd = this.getXmlFactory().deserialize(xmlPayload);
+      XmlMAPDialog dialogResponseUssd = this.getXmlFactory().deserialize(xmlPayload);
 
       if (dialogResponseUssd == null) {
         log.error("Received Success Response but couldn't deserialize to Dialog. Dialog is null");
       }
-      MAPMessage mapMessage = null;
-      if (dialogResponseUssd != null) {
-        mapMessage = dialogResponseUssd.getMAPMessage();
-      }
+      processXmlMAPDialog(xmlDialog,mapDialog);
 
-      switch (mapMessage.getMessageType()) {
-        case unstructuredSSRequest_Request:
-          this.addUnstructuredSSRequest((UnstructuredSSRequest) mapMessage,
-              dialog);
-          break;
-        case processUnstructuredSSRequest_Response:
-          ProcessUnstructuredSSResponse ussdResponse =
-              (ProcessUnstructuredSSResponse) mapMessage;
-
-          dialog.addProcessUnstructuredSSResponse(ussdResponse.getInvokeId(),
-
-          ussdResponse.getDataCodingScheme(), ussdResponse.getUSSDString());
-
-          break;
-        default:
-          log.error("Received Success Response but unidentified response body");
-          break;
-      }
-
-      dialog.close(false);
+      mapDialog.close(false);
 
     } catch (Exception e) {
       log.catching(e);
@@ -1271,24 +1370,24 @@ public class DialogListener implements MAPDialogListener,
 
   public void addUnstructuredSSRequestNetworkInitiated(
       UnstructuredSSRequest unstructuredSSRequestInd,
-      MAPDialogSupplementary mapDialogSupplementary, String url, Dialog dialog)
+      MAPDialogSupplementary mapDialogSupplementary, String url, XmlMAPDialog xmlDialog)
       throws MAPException {
 
-    log.entry(unstructuredSSRequestInd, mapDialogSupplementary, url, dialog);
+    log.entry(unstructuredSSRequestInd, mapDialogSupplementary, url, xmlDialog);
 
     if (mapDialogSupplementary == null) {
       MAPParameterFactory mapParameterFactory =
           this.mapProviderInstance.getMAPParameterFactory();
       ISDNAddressString origReference =
-          mapParameterFactory.createISDNAddressString(dialog.getOrigReference()
+          mapParameterFactory.createISDNAddressString(xmlDialog.getReceivedOrigReference()
               .getAddressNature(),
-              dialog.getOrigReference().getNumberingPlan(), dialog
-                  .getOrigReference().getAddress());
+              xmlDialog.getReceivedOrigReference().getNumberingPlan(), xmlDialog
+                  .getReceivedOrigReference().getAddress());
       ISDNAddressString destReference =
-          mapParameterFactory.createISDNAddressString(dialog.getDestReference()
+          mapParameterFactory.createISDNAddressString(xmlDialog.getReceivedDestReference()
               .getAddressNature(),
-              dialog.getDestReference().getNumberingPlan(), dialog
-                  .getDestReference().getAddress());
+              xmlDialog.getReceivedDestReference().getNumberingPlan(), xmlDialog
+                  .getReceivedDestReference().getAddress());
 
       mapDialogSupplementary =
           this.mapProviderInstance.getMAPServiceSupplementary()
@@ -1304,7 +1403,7 @@ public class DialogListener implements MAPDialogListener,
     try {
       session =
           getSession(String.valueOf(mapDialogSupplementary.getLocalDialogId()),
-              dialog.getDestReference().getAddress(), url);
+              xmlDialog.getReceivedDestReference().getAddress(), url);
     } catch (ExecutionException e) {
       log.catching(e);
     }
