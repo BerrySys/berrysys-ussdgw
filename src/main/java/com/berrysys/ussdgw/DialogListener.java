@@ -48,31 +48,31 @@ import org.restcomm.protocols.ss7.m3ua.impl.M3UAManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
 import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
-import org.restcomm.protocols.ss7.map.MAPStackImpl;
-import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
-import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
-import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
-import org.restcomm.protocols.ss7.map.api.MAPDialog;
-import org.restcomm.protocols.ss7.map.api.MAPDialogListener;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPMessage;
-import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.MAPProvider;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortProviderReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortSource;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
-import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.*;
-import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
-import org.restcomm.protocols.ss7.tcap.api.MessageType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+import org.mobicents.protocols.ss7.map.MAPStackImpl;
+import org.mobicents.protocols.ss7.map.api.MAPApplicationContext;
+import org.mobicents.protocols.ss7.map.api.MAPApplicationContextName;
+import org.mobicents.protocols.ss7.map.api.MAPApplicationContextVersion;
+import org.mobicents.protocols.ss7.map.api.MAPDialog;
+import org.mobicents.protocols.ss7.map.api.MAPDialogListener;
+import org.mobicents.protocols.ss7.map.api.MAPException;
+import org.mobicents.protocols.ss7.map.api.MAPMessage;
+import org.mobicents.protocols.ss7.map.api.MAPParameterFactory;
+import org.mobicents.protocols.ss7.map.api.MAPProvider;
+import org.mobicents.protocols.ss7.map.api.dialog.MAPAbortProviderReason;
+import org.mobicents.protocols.ss7.map.api.dialog.MAPAbortSource;
+import org.mobicents.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
+import org.mobicents.protocols.ss7.map.api.dialog.MAPRefuseReason;
+import org.mobicents.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
+import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
+import org.mobicents.protocols.ss7.map.api.primitives.AddressString;
+import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
+import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
+import org.mobicents.protocols.ss7.sccp.impl.SccpStackImpl;
+import org.mobicents.protocols.ss7.tcap.api.MessageType;
+import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
 import org.mobicents.ussdgateway.XmlMAPDialog;
 import org.mobicents.ussdgateway.DialogType;
 import org.mobicents.ussdgateway.EventsSerializeFactory;
@@ -634,10 +634,10 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogAccept(
-   * org.restcomm.protocols.ss7.map.api.MAPDialog,
-   * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogAccept(
+   * org.mobicents.protocols.ss7.map.api.MAPDialog,
+   * org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer)
    */
   @Override
   public void onDialogAccept(MAPDialog mapDialog,
@@ -649,8 +649,8 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogClose(org
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogClose(org
    * .mobicents.protocols.ss7.map.api.MAPDialog)
    */
   @Override
@@ -662,9 +662,9 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogDelimiter
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogDelimiter
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog)
    */
   @Override
   public void onDialogDelimiter(MAPDialog mapDialog) {
@@ -674,10 +674,10 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogNotice(
-   * org.restcomm.protocols.ss7.map.api.MAPDialog,
-   * org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogNotice(
+   * org.mobicents.protocols.ss7.map.api.MAPDialog,
+   * org.mobicents.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic)
    */
   @Override
   public void onDialogNotice(MAPDialog mapDialog,
@@ -688,12 +688,12 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogProviderAbort
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog,
-   * org.restcomm.protocols.ss7.map.api.dialog.MAPAbortProviderReason,
-   * org.restcomm.protocols.ss7.map.api.dialog.MAPAbortSource,
-   * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogProviderAbort
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog,
+   * org.mobicents.protocols.ss7.map.api.dialog.MAPAbortProviderReason,
+   * org.mobicents.protocols.ss7.map.api.dialog.MAPAbortSource,
+   * org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer)
    */
   @Override
   public void onDialogProviderAbort(MAPDialog mapDialog,
@@ -706,23 +706,23 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogReject(
-   * org.restcomm.protocols.ss7.map.api.MAPDialog,
-   * org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason,
-   * org.restcomm.protocols.ss7.map.api.dialog.MAPProviderError,
-   * org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName,
-   * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogReject(
+   * org.mobicents.protocols.ss7.map.api.MAPDialog,
+   * org.mobicents.protocols.ss7.map.api.dialog.MAPRefuseReason,
+   * org.mobicents.protocols.ss7.map.api.dialog.MAPProviderError,
+   * org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName,
+   * org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer)
    */
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogReject(
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogReject(
    * org.mobicents.protocols .ss7.map.api.MAPDialog,
-   * org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason,
-   * org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName,
-   * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
+   * org.mobicents.protocols.ss7.map.api.dialog.MAPRefuseReason,
+   * org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName,
+   * org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer)
    */
   @Override
   public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
@@ -736,9 +736,9 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogRelease
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogRelease
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog)
    */
   @Override
   public void onDialogRelease(MAPDialog mapDialog) {
@@ -749,12 +749,12 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogRequest
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog,
-   * org.restcomm.protocols.ss7.map.api.primitives.AddressString,
-   * org.restcomm.protocols.ss7.map.api.primitives.AddressString,
-   * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogRequest
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog,
+   * org.mobicents.protocols.ss7.map.api.primitives.AddressString,
+   * org.mobicents.protocols.ss7.map.api.primitives.AddressString,
+   * org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer)
    */
   @Override
   public void onDialogRequest(MAPDialog mapDialog, AddressString destReference,
@@ -770,13 +770,13 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogRequestEricsson
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog,
-   * org.restcomm.protocols.ss7.map.api.primitives.AddressString,
-   * org.restcomm.protocols.ss7.map.api.primitives.AddressString,
-   * org.restcomm.protocols.ss7.map.api.primitives.IMSI,
-   * org.restcomm.protocols.ss7.map.api.primitives.AddressString)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogRequestEricsson
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog,
+   * org.mobicents.protocols.ss7.map.api.primitives.AddressString,
+   * org.mobicents.protocols.ss7.map.api.primitives.AddressString,
+   * org.mobicents.protocols.ss7.map.api.primitives.IMSI,
+   * org.mobicents.protocols.ss7.map.api.primitives.AddressString)
    */
   public void onDialogRequestEricsson(MAPDialog mapDialog,
       AddressString destReference, AddressString origReference, IMSI imsi,
@@ -787,9 +787,9 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogTimeout
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogTimeout
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog)
    */
   @Override
   public void onDialogTimeout(MAPDialog mapDialog) {
@@ -799,11 +799,11 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPDialogListener#onDialogUserAbort
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog,
-   * org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice,
-   * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPDialogListener#onDialogUserAbort
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog,
+   * org.mobicents.protocols.ss7.map.api.dialog.MAPUserAbortChoice,
+   * org.mobicents.protocols.ss7.map.api.primitives.MAPExtensionContainer)
    */
   @Override
   public void onDialogUserAbort(MAPDialog mapDialog,
@@ -815,10 +815,10 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPServiceListener#onErrorComponent
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog, java.lang.Long,
-   * org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPServiceListener#onErrorComponent
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog, java.lang.Long,
+   * org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage)
    */
   @Override
   public void onErrorComponent(MAPDialog mapDialog, Long invokeId,
@@ -829,9 +829,9 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPServiceListener#onInvokeTimeout
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog, java.lang.Long)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPServiceListener#onInvokeTimeout
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog, java.lang.Long)
    */
   @Override
   public void onInvokeTimeout(MAPDialog mapDialog, Long invokeId) {
@@ -841,8 +841,8 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPServiceListener#onMAPMessage(org
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPServiceListener#onMAPMessage(org
    * .mobicents.protocols.ss7.map.api.MAPMessage)
    */
   @Override
@@ -923,8 +923,8 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
+   *
+   * @see org.mobicents.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
    * #onProcessUnstructuredSSRequest(org.mobicents .protocols.ss7.map.api.service
    * .supplementary.ProcessUnstructuredSSRequest)
    */
@@ -987,8 +987,8 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
+   *
+   * @see org.mobicents.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
    * #onProcessUnstructuredSSResponse(org.mobicents .protocols.ss7.map.api.service
    * .supplementary.ProcessUnstructuredSSResponse)
    */
@@ -1069,10 +1069,10 @@ public class DialogListener implements MAPDialogListener,
   }
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPServiceListener#
-   * onProviderErrorComponent(org.restcomm.protocols.ss7.map.api.MAPDialog, java.lang.Long,
-   * org.restcomm.protocols.ss7.map.api.dialog.MAPProviderError)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPServiceListener#
+   * onProviderErrorComponent(org.mobicents.protocols.ss7.map.api.MAPDialog, java.lang.Long,
+   * org.mobicents.protocols.ss7.map.api.dialog.MAPProviderError)
    */
   /**
    * On provider error component.
@@ -1087,10 +1087,10 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPServiceListener#onRejectComponent
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog, java.lang.Long,
-   * org.restcomm.protocols.ss7.tcap.asn.comp.Problem)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPServiceListener#onRejectComponent
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog, java.lang.Long,
+   * org.mobicents.protocols.ss7.tcap.asn.comp.Problem)
    */
   /**
    * On reject component.
@@ -1107,10 +1107,10 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.MAPServiceListener#onRejectComponent
-   * (org.restcomm.protocols.ss7.map.api.MAPDialog, java.lang.Long,
-   * org.restcomm.protocols.ss7.tcap.asn.comp.Problem, boolean)
+   *
+   * @see org.mobicents.protocols.ss7.map.api.MAPServiceListener#onRejectComponent
+   * (org.mobicents.protocols.ss7.map.api.MAPDialog, java.lang.Long,
+   * org.mobicents.protocols.ss7.tcap.asn.comp.Problem, boolean)
    */
   @Override
   public void onRejectComponent(MAPDialog mapDialog, Long invokeId,
@@ -1121,8 +1121,8 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
+   *
+   * @see org.mobicents.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
    * #onUnstructuredSSNotifyRequest(org.mobicents
    * .protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyRequest)
    */
@@ -1135,8 +1135,8 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
+   *
+   * @see org.mobicents.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
    * #onUnstructuredSSNotifyResponse(org.mobicents .protocols.ss7.map.api.service
    * .supplementary.UnstructuredSSNotifyResponse)
    */
@@ -1183,8 +1183,8 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
+   *
+   * @see org.mobicents.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
    * #onUnstructuredSSRequest(org.mobicents.protocols
    * .ss7.map.api.service.supplementary.UnstructuredSSRequest)
    */
@@ -1211,8 +1211,8 @@ public class DialogListener implements MAPDialogListener,
 
   /*
    * (non-Javadoc)
-   * 
-   * @see org.restcomm.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
+   *
+   * @see org.mobicents.protocols.ss7.map.api.service.supplementary. MAPServiceSupplementaryListener
    * #onUnstructuredSSResponse(org.mobicents.protocols
    * .ss7.map.api.service.supplementary.UnstructuredSSResponse)
    */
