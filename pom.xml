@@ -29,7 +29,7 @@
 		<ss7.management.version>2.0.0-SNAPSHOT</ss7.management.version>
 		<ss7.clock.version>2.0.0-SNAPSHOT</ss7.clock.version>
 		<org.mobicents.ussd.version>7.1.63</org.mobicents.ussd.version>
-		<httpclient.version>4.3.3</httpclient.version>
+		<httpclient.version>4.5.13</httpclient.version>
 		<commons-io.version>2.4</commons-io.version>
 		<jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
 		<guava.version>15.0</guava.version>
